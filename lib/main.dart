@@ -29,14 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   final counterBloc = CounterBloc();
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             StreamBuilder(
               stream: counterBloc.counterStream,
+              initialData: 0,
               builder: (context, snapshot) {
                 return Text(
-                  '$_counter',
+                  '${snapshot.data}',
                   style: Theme.of(context).textTheme.headline4,
                 );
               }
@@ -63,14 +57,32 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          _counter++;
-          counterBloc.counterSink.add(_counter);
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        children: [
+          FloatingActionButton(
+            onPressed: (){
+              counterBloc.eventSink.add(CounterAction.Increment);
+            },
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
+          FloatingActionButton(
+            onPressed: (){
+              counterBloc.eventSink.add(CounterAction.Decrement);
+            },
+            tooltip: 'Decrement',
+            child: const Icon(Icons.remove),
+          ),
+          FloatingActionButton(
+            onPressed: (){
+              counterBloc.eventSink.add(CounterAction.Reset);
+            },
+            tooltip: 'Reset',
+            child: const Icon(Icons.loop),
+          ),
+        ],
       ),
+
     );
   }
 }
